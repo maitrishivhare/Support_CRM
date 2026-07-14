@@ -1,0 +1,6 @@
+backend/data/*.sqlite
+backend/data/*.sqlite-*
+backend/data/*.db
+node_modules/
+frontend/dist/
+.env
