@@ -11,6 +11,11 @@ class TicketStatus(str, Enum):
     CLOSED = "Closed"
 
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=1)
+
+
 class TicketCreate(BaseModel):
     customer_name: str = Field(min_length=1, max_length=100)
     customer_email: EmailStr

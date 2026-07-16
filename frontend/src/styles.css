@@ -573,6 +573,280 @@ textarea {
   line-height: 1;
 }
 
+/* ================== PUBLIC SUPPORT PAGE ================== */
+.public-shell {
+  display: flex;
+  justify-content: center;
+  padding: 32px 24px 48px;
+}
+
+.public-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  padding: 32px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 24px 45px rgba(22, 35, 32, 0.08);
+  border: 1px solid #e9f2f0;
+}
+
+.public-header h1 {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.public-intro {
+  max-width: 520px;
+  color: #4e5c57;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.public-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.public-footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.public-footer-text {
+  max-width: 760px;
+  text-align: center;
+  color: #586661;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+/* ================== LOGIN PAGE ================== */
+.login-container {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f766e 0%, #172220 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--paper);
+  border-radius: 20px;
+  padding: 48px 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-logo {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  background: #0f766e;
+  color: #fff;
+  border-radius: 12px;
+  font: 800 32px Manrope;
+  margin: 0 auto 16px;
+}
+
+.login-header h1 {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.login-header p {
+  color: var(--muted);
+}
+
+.login-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--teal);
+  font: 600 14px Manrope;
+  cursor: pointer;
+  margin-bottom: 18px;
+  padding: 0;
+}
+
+.login-back-button:hover {
+  color: #0b5f58;
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.login-form label {
+  margin-bottom: 0;
+}
+
+.login-form input {
+  font-size: 16px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px 14px;
+  background: #0f766e;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.login-btn:hover {
+  background: #0b5f58;
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-error {
+  color: #b42318;
+  font-size: 13px;
+  margin: 0;
+}
+
+.login-demo {
+  background: #f0f8f6;
+  border: 1px solid #c8e8e1;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.login-demo strong {
+  color: var(--ink);
+}
+
+/* ================== CUSTOMER PAGES ================== */
+.logout-btn {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+  margin-left: auto;
+}
+
+.ticket-count {
+  display: inline-block;
+  background: #e8f5f2;
+  color: #0b5f58;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ticket-list {
+  display: grid;
+  gap: 12px;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbfcfc;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ticket-row:hover {
+  border-color: var(--teal);
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.1);
+}
+
+.ticket-id {
+  display: inline-block;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #e8f5f2;
+  color: #0b5f58;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.ticket-subject {
+  margin: 0;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-open {
+  background: var(--teal-pale);
+  color: var(--teal);
+}
+
+.status-in-progress {
+  background: var(--amber-pale);
+  color: var(--amber);
+}
+
+.status-closed {
+  background: #eff1f0;
+  color: #5e6966;
+}
+
+.priority {
+  padding: 4px 8px;
+  background: #fef3f1;
+  color: #b45316;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+
 /* ================== TABLET (640px - 1024px) ================== */
 @media (max-width: 1024px) {
   main {
@@ -962,4 +1236,34 @@ textarea {
   .empty-state {
     padding: 24px 12px;
   }
+
+  .login-card {
+    padding: 32px 24px;
+  }
+
+  .login-header {
+    margin-bottom: 24px;
+  }
+
+  .login-logo {
+    width: 52px;
+    height: 52px;
+    font-size: 28px;
+  }
+
+  .login-header h1 {
+    font-size: 24px;
+  }
+
+  .ticket-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .ticket-meta {
+    flex-wrap: wrap;
+    width: 100%;
+  }
 }
+

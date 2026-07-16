@@ -1,14 +1,27 @@
 """FastAPI application for the Support CRM ticket API."""
 
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import datetime, timedelta
 import sqlite3
+import sys
+from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.requests import Request
 
-from database import get_connection, initialize_database
-from schemas import TicketCreate, TicketDetailResponse, TicketListResponse, TicketStatus, TicketUpdate
+BASE_DIR = Path(__file__).resolve().parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
+try:
+    from .database import get_connection, initialize_database
+    from .schemas import TicketCreate, TicketDetailResponse, TicketListResponse, TicketStatus, TicketUpdate, LoginRequest
+    from .auth import create_access_token, decode_token, verify_password, ACCESS_TOKEN_EXPIRE_MINUTES, Token
+except ImportError:
+    from database import get_connection, initialize_database
+    from schemas import TicketCreate, TicketDetailResponse, TicketListResponse, TicketStatus, TicketUpdate, LoginRequest
+    from auth import create_access_token, decode_token, verify_password, ACCESS_TOKEN_EXPIRE_MINUTES, Token
 
 
 @asynccontextmanager
@@ -24,6 +37,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+async def get_current_user(request: Request) -> str:
+    """Verify the JWT token and return the admin email."""
+    auth_header = request.headers.get("authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid authorization header")
+    
+    token = auth_header.split(" ", 1)[1]
+    token_data = decode_token(token)
+    if token_data is None:
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+    return token_data.admin_email
+
 
 
 def ticket_from_row(row: sqlite3.Row, include_notes: bool = False) -> dict:
@@ -55,6 +82,63 @@ def get_ticket_or_404(ticket_id: int, include_notes: bool = False) -> dict:
 @app.get("/api/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.post("/api/auth/login", response_model=Token)
+def login(request: LoginRequest) -> dict:
+    """Login with email and password to get JWT token."""
+    with get_connection() as connection:
+        admin = connection.execute(
+            "SELECT id, email, hashed_password FROM admin_users WHERE email = ?",
+            (request.email,)
+        ).fetchone()
+    
+    if not admin or not verify_password(request.password, admin["hashed_password"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": admin["email"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.get("/api/customers")
+def list_customers(admin_email: str = Depends(get_current_user)) -> list[dict]:
+    """Get all customers with ticket count."""
+    with get_connection() as connection:
+        customers = connection.execute(
+            """
+            SELECT c.id, c.name, c.email, c.phone, c.created_at,
+                   COUNT(t.id) as ticket_count
+            FROM customers c
+            LEFT JOIN tickets t ON c.id = t.customer_id
+            GROUP BY c.id
+            ORDER BY c.created_at DESC
+            """
+        ).fetchall()
+    return [dict(row) for row in customers]
+
+
+@app.get("/api/customers/{customer_id}")
+def get_customer(customer_id: int, admin_email: str = Depends(get_current_user)) -> dict:
+    """Get a specific customer with their tickets."""
+    with get_connection() as connection:
+        customer = connection.execute(
+            "SELECT * FROM customers WHERE id = ?", (customer_id,)
+        ).fetchone()
+        if not customer:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        
+        tickets = connection.execute(
+            "SELECT * FROM tickets WHERE customer_id = ? ORDER BY created_at DESC",
+            (customer_id,)
+        ).fetchall()
+    
+    customer_dict = dict(customer)
+    customer_dict["tickets"] = [dict(row) for row in tickets]
+    return customer_dict
+
 
 
 @app.get("/api/tickets", response_model=list[TicketListResponse])
