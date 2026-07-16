@@ -14,7 +14,7 @@ export default function Login({ onLoginSuccess, onCancel }) {
 
     try {
       console.log('Starting login request...')
-      const response = await const response = await fetch(${API_URL}${path}, {
+      const response = await fetch(${import.meta.env.VITE_API_URL}/api/auth/login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
